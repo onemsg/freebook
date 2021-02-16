@@ -1,0 +1,25 @@
+GET http://localhost:8080/api/book
+
+###
+DELETE  http://localhost:8080/api/book/602ad72e2e564c70fd74f106
+
+
+###
+GET http://localhost:8080/api/book?title=action
+
+
+###
+POST http://localhost:8080/api/book
+Content-Type: application/json
+
+{
+    "title": "spring in action 4",
+    "price": 20.0,
+    "introduction": "....",
+    "about": "...",
+    "seller": {
+        "name": "徽章",
+        "contact": "vx： kvimsg",
+        "about": "可爱的小哥哥"
+    }
+}

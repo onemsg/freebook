@@ -1,0 +1,14 @@
+{
+    "configurations": [
+        {
+            "type": "java",
+            "name": "Spring Boot-FreebookApplication<freebook>",
+            "request": "launch",
+            "cwd": "${workspaceFolder}",
+            "console": "internalConsole",
+            "mainClass": "com.onemsg.freebook.FreebookApplication",
+            "projectName": "freebook",
+            "args": ""
+        }
+    ]
+}
