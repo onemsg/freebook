@@ -34,7 +34,6 @@ public class ReactiveMongoCommentRepository implements CommentRepository {
     public Mono<Comment> findById(String id) {
         Bson filter = Filters.eq("_id", new ObjectId(id));
         return Mono.from(collection.find(filter).first());
-
     }
 
     @Override

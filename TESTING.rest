@@ -1,13 +1,10 @@
+### = = = TESTING book = = = 
+
 GET http://localhost:8080/api/book
-
 ###
-DELETE  http://localhost:8080/api/book/602ad72e2e564c70fd74f106
-
-
+DELETE  http://localhost:8080/api/book/602ad72e2e564c70fd74f105
 ###
 GET http://localhost:8080/api/book?title=action
-
-
 ###
 POST http://localhost:8080/api/book
 Content-Type: application/json
@@ -22,4 +19,17 @@ Content-Type: application/json
         "contact": "vx： kvimsg",
         "about": "可爱的小哥哥"
     }
+}
+
+### = = = TESTING USER = = =
+###
+GET http://localhost:8080/api/currentuser
+
+###
+POST http://localhost:8080/api/login
+Content-Type: application/json
+
+{
+    "phoneNumber": "1001011",
+    "password": "cuidan123"
 }

@@ -1,19 +1,26 @@
 package com.onemsg.freebook.config;
 
+import static com.onemsg.freebook.config.Constants.WEB_SESSION_KEY_USER;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onemsg.freebook.handler.BookHandler;
 import com.onemsg.freebook.handler.CommentHandler;
+import com.onemsg.freebook.handler.UserHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.codec.ServerCodecConfigurer;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.http.codec.json.Jackson2JsonEncoder;
 import org.springframework.web.reactive.config.EnableWebFlux;
+import org.springframework.web.reactive.config.ResourceHandlerRegistry;
 import org.springframework.web.reactive.config.WebFluxConfigurer;
+import org.springframework.web.reactive.function.server.HandlerFilterFunction;
 import org.springframework.web.reactive.function.server.RouterFunction;
 import org.springframework.web.reactive.function.server.RouterFunctions;
+import org.springframework.web.reactive.function.server.ServerResponse;
 
 @Configuration
 @EnableWebFlux
@@ -24,21 +31,64 @@ public class WebConfig implements WebFluxConfigurer{
     @Autowired
     private CommentHandler commentHandler;
     @Autowired
+    private UserHandler userHandler;
+
+    @Autowired
     private ObjectMapper objectMapper;
 
     @Bean
-    public RouterFunction<?> routerFunction() {
+    public RouterFunction<?> bookRouterFunction() {
         return RouterFunctions.route()
             .GET("/api/book", bookHandler::listBook)
             .GET("/api/book/{id}", bookHandler::getBook)
-            .POST("/api/book", bookHandler::createBook)
-            .PUT("/api/book/{id}", bookHandler::updateBook)
-            .DELETE("/api/book/{id}", bookHandler::deleteBook)
+            .add(RouterFunctions.route()
+                .filter(userFilterFunction())
+                .POST("/api/book", bookHandler::createBook)
+                .PUT("/api/book/{id}", bookHandler::updateBook)
+                .DELETE("/api/book/{id}", bookHandler::deleteBook)
+                .build()
+            )
+            .build();
+    }
+
+    @Bean
+    public RouterFunction<?> commentRouterFunction() {
+        return RouterFunctions.route()
             .GET("/api/comment", commentHandler::listComment)
             .GET("/api/comment/{id}", commentHandler::getComment)
             .POST("/api/comment", commentHandler::createComment)
-            .DELETE("/api/comment/{id}", commentHandler::deleteComment)
+            .add(RouterFunctions.route()
+                .filter(userFilterFunction())
+                .POST("/api/comment", commentHandler::createComment)
+                .DELETE("/api/comment/{id}", commentHandler::deleteComment)
+                .build()
+            )
             .build();
+    }
+
+    @Bean
+    public RouterFunction<?> userRouterFunction() {
+        return RouterFunctions.route()
+            .POST("/api/login", userHandler::login)
+            .GET("/api/currentuser", userHandler::currentUser)
+            .add(RouterFunctions.route()
+                .filter(userFilterFunction())
+                .DELETE("/api/logout", userHandler::logout)
+                .build()
+            )
+            .build();
+    }
+
+
+    @Bean
+    public HandlerFilterFunction<ServerResponse, ServerResponse> userFilterFunction(){
+        return (request, next) -> {
+            return request.session()
+                .map( session -> session.getAttribute(WEB_SESSION_KEY_USER) != null )
+                .flatMap( logon -> 
+                    logon ? next.handle(request) : ServerResponse.status(HttpStatus.UNAUTHORIZED).build()
+                );
+        };
     }
 
     @Override
@@ -48,4 +98,9 @@ public class WebConfig implements WebFluxConfigurer{
         configurer.defaultCodecs().jackson2JsonEncoder(new Jackson2JsonEncoder(objectMapper));
     }
 
+
+    @Override
+    public void addResourceHandlers(ResourceHandlerRegistry registry){
+        registry.addResourceHandler("/**").addResourceLocations("/static/");
+    }
 }
