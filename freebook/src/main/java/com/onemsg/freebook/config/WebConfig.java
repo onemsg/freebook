@@ -60,7 +60,6 @@ public class WebConfig implements WebFluxConfigurer{
         return RouterFunctions.route()
             .GET("/api/comment", commentHandler::listComment)
             .GET("/api/comment/{id}", commentHandler::getComment)
-            .POST("/api/comment", commentHandler::createComment)
             .add(RouterFunctions.route()
                 .filter(userFilterFunction())
                 .POST("/api/comment", commentHandler::createComment)

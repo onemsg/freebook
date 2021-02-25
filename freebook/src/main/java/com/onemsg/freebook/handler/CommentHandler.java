@@ -22,10 +22,10 @@ public class CommentHandler {
     private CommentRepository commentRepository;
 
     public Mono<ServerResponse> listComment(ServerRequest request) {
-        var start = request.queryParam("start").map(CommentHandler::toInteger);
-        var limit = request.queryParam("limit").map(CommentHandler::toInteger);
+        var start = request.queryParam("start").map(CommentHandler::toInteger).orElse(null);
+        var limit = request.queryParam("limit").map(CommentHandler::toInteger).orElse(null);
         return ServerResponse.ok().contentType(APPLICATION_JSON)
-                .body(commentRepository.findAll(start.get(), limit.get()), Comment.class);
+                .body(commentRepository.findAll(start, limit), Comment.class);
     }
 
     public Mono<ServerResponse> getComment(ServerRequest request) {

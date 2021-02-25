@@ -22,7 +22,23 @@ Content-Type: application/json
 }
 
 ### = = = TESTING USER = = =
-GET http://localhost:8080/api/
+GET http://localhost:8080/api/comment
+###
+GET http://localhost:8080/api/comment/6037acbbe43cda3b57e17663
+###
+POST http://localhost:8080/api/comment
+Content-Type: application/json
+
+{
+    "title": "顶顶顶",
+    "content": "书都可以啊 有我想要的",
+    "publisher": "爱欢迎的云朵"
+}
+###
+DELETE  http://localhost:8080/api/comment/1
+
+
+
 
 ### = = = TESTING USER = = =
 ###
