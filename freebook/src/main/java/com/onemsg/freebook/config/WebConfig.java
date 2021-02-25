@@ -5,6 +5,7 @@ import static com.onemsg.freebook.config.Constants.WEB_SESSION_KEY_USER;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.onemsg.freebook.handler.BookHandler;
 import com.onemsg.freebook.handler.CommentHandler;
+import com.onemsg.freebook.handler.PhotoHandler;
 import com.onemsg.freebook.handler.UserHandler;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,9 @@ public class WebConfig implements WebFluxConfigurer{
     private CommentHandler commentHandler;
     @Autowired
     private UserHandler userHandler;
+    @Autowired
+    private PhotoHandler photoHandler;
+
 
     @Autowired
     private ObjectMapper objectMapper;
@@ -61,6 +65,20 @@ public class WebConfig implements WebFluxConfigurer{
                 .filter(userFilterFunction())
                 .POST("/api/comment", commentHandler::createComment)
                 .DELETE("/api/comment/{id}", commentHandler::deleteComment)
+                .build()
+            )
+            .build();
+    }
+
+
+    @Bean
+    public RouterFunction<?> photoRouterFunction() {
+        return RouterFunctions.route()
+            .GET("/public/img/{id}", photoHandler::get)
+            .add(RouterFunctions.route()
+                .filter(userFilterFunction())
+                .POST("/api/photo/upload", photoHandler::upload)
+                .DELETE("/api/photo/{id}", photoHandler::delete)
                 .build()
             )
             .build();

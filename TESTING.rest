@@ -22,6 +22,9 @@ Content-Type: application/json
 }
 
 ### = = = TESTING USER = = =
+GET http://localhost:8080/api/
+
+### = = = TESTING USER = = =
 ###
 GET http://localhost:8080/api/currentuser
 
@@ -33,3 +36,22 @@ Content-Type: application/json
     "phoneNumber": "1001011",
     "password": "cuidan123"
 }
+
+
+### = = = TESTING IMG FILE = = =
+GET http://localhost:8080/public/img/603693c738624a6c0e592de2
+
+###
+DELETE http://localhost:8080/api/photo/603692dc38624a6c0e592ddf
+
+
+###
+POST http://localhost:8080/api/photo/upload
+Content-Type: multipart/form-data; boundary=----WebKitFormBoundary7MA4YWxkTrZu0gW
+
+------WebKitFormBoundary7MA4YWxkTrZu0gW
+Content-Disposition: form-data; name="photo"; filename="1.png"
+Content-Type: image/png
+
+< C:\Users\CoolBoy\Pictures\girl05.jpg
+------WebKitFormBoundary7MA4YWxkTrZu0gW--

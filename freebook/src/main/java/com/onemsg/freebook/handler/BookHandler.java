@@ -36,7 +36,7 @@ public class BookHandler {
         }
 
         return bookRepository.findById(id)
-            .flatMap( book -> ServerResponse.ok().contentType(APPLICATION_JSON).bodyValue(book) )
+            .flatMap( book -> book == null ? null : ServerResponse.ok().contentType(APPLICATION_JSON).bodyValue(book) )
             .switchIfEmpty(ServerResponse.notFound().build()); 
         
     }
